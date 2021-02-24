@@ -34,7 +34,7 @@ const { HOST
 
                           // const gens = fNTimes(generateMatrix, [[10, 13], [6,9], 1], 9)
 
-                          trace(gens)
+                          // trace(gens)
 
                           // timerWrap(insertGen, [connection, g1])
                           // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 2]])

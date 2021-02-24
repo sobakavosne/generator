@@ -11,7 +11,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234567890';
+-- ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234567890';
 
 -- Дамп структуры базы данных yumi
 CREATE DATABASE IF NOT EXISTS `yumi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
@@ -52041,7 +52041,7 @@ INSERT INTO `users` (`yumi_user_id`, `hashtag`, `password`) VALUES
 	(9999457365333, 'eZIWxx', '0QJNRjRIy'),
 	(9999542337883, 'QMDwxf', 'dg7kbqcYI'),
 	(9999557838253, 'BYm1M6', '9ZpKKQpfR'),
-	(9999941152336, '3AixHH', 'koBlPhRR3');
+	(9999941152336, '3AixHH', 'koBlPhRR3');	
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
