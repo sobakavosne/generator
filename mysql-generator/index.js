@@ -1,6 +1,6 @@
 const app                 = require('express')()
 
-const { isError, head }   = require('lodash/fp')
+const { isError, head, has }   = require('lodash/fp')
 
 const { generateMatrix }  = require('./server/utils/generator')
 
@@ -18,8 +18,9 @@ const { get
       , insert
       , remove
       , removeAll 
-      , insertGen
-      }                   = require('./server/API/controller')
+      , insertGen,
+      getRowCount
+      }                   = require('./server/API/controller.db')
 
 const { HOST
       , DATABASE
@@ -28,23 +29,18 @@ const { HOST
 
                           app.listen(() => trace('\nServer listening on port ' + PORT))
 
-                          // connection.connect((x) => isError(x) ? trace(x.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}\n`))
+                          connection.connect((x) => isError(x) ? trace(x.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}\n`))
 
-                          // removeAll(connection, 'users')
+                          removeAll(connection, 'users')
 
-                          // const gens = fNTimes(generateMatrix, [[10, 13], [6,9], 1], 9)
+                          // const gens = timerWrap(fNTimes, [generateMatrix, [[1000000, 13], [6,9], 9]])
 
-                          // trace(gens)
+                          // gens.map((x) => timerWrap(insertGen, [connection, x]))
+                          
+                          // const gen = generateMatrix([[1000000, 13], [6,9], 11])
 
-                          // timerWrap(insertGen, [connection, g1])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 2]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 3]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 4]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 5]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 6]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 7]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 8]])
-                          // timerWrap(insertGen, [connection, generateMatrix, [[1000000, 13], [6,9], 9]])
+                          // insertGen([connection, gen])
+                          
 
 
                           

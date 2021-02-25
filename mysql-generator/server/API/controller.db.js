@@ -18,7 +18,7 @@ const insertGen           = async ([c, gen])  => await c.query('INSERT INTO `use
                                                                `${stringifyMatrix(gen)}`, errorDB
                                                               )
 
-const getRowCount         = async (c, table)  => await c.query(`SELECT COUNT(*) FROM ${table}`)
+const getRowCount         = async (c, table)  => await c.query(`SELECT COUNT(*) FROM ${table}`, errorDB)
 
 
 module.exports            = { get, getAll, insert, remove, insertGen, removeAll, getRowCount }

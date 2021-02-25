@@ -7,7 +7,7 @@ const { HOST
       , PORT
       }               = require('dotenv').config().parsed
 
-const connection      = mysql.createConnection({ host: HOST, user: USER, password: PSSWD, database: DATABASE })
+const connection      = mysql.createConnection({ host: HOST, user: USER, password: PSSWD, database: DATABASE, connectTimeout: 1000000 })
 
 
 module.exports        = { connection }
