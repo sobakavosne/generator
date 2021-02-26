@@ -1,6 +1,6 @@
 **Generator**
 
-Application aimed to generate records (Redis and MySQL)
+Application aimed to generate records (MySQL)
 
 **MySQL-generator usage**
 

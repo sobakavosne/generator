@@ -1,46 +1,39 @@
-const app                 = require('express')()
+const { generateMatrix, checkDecade }  = require('./source/utils/generator')
 
-const { isError, head, has }   = require('lodash/fp')
+const { connection }      = require('./source/utils/db')
 
-const { generateMatrix }  = require('./server/utils/generator')
-
-const { connection }      = require('./server/utils/db')
+const { floor }           = require('lodash')
 
 const { trace
-      , timerWrap
-      , timerWrapNTimes
-      , stringifyMatrix
       , fNTimes
-      }                   = require('./server/utils/helpers')
+      , traceWrap
+      , timerWrap
+      , fNTimesTCE
+      , stringifyMatrix,
+      progress
+      }                   = require('./source/utils/helpers')
 
-const { get
-      , getAll
+const { getAll
       , insert
       , remove
+      , getByID
       , removeAll 
-      , insertGen,
-      getRowCount
-      }                   = require('./server/API/controller.db')
+      , insertGen
+      , getRowCount
+      }                   = require('./source/API/controller.db')
+const { compose } = require('lodash/fp')
 
 const { HOST
       , DATABASE
       , PORT
       }                   = require('dotenv').config().parsed
 
-                          app.listen(() => trace('\nServer listening on port ' + PORT))
-
-                          connection.connect((x) => isError(x) ? trace(x.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}\n`))
+                          connection.connect((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}.\n`))
 
                           removeAll(connection, 'users')
 
-                          // const gens = timerWrap(fNTimes, [generateMatrix, [[1000000, 13], [6,9], 9]])
-
-                          // gens.map((x) => timerWrap(insertGen, [connection, x]))
+                          const gens = fNTimes([generateMatrix, [[10000, 13], [6,9], checkDecade(10)]])
                           
-                          // const gen = generateMatrix([[1000000, 13], [6,9], 11])
+                          // gens.map((x, i) => compose(insertGen)([connection, x, i, gens.lengeh]))
 
-                          // insertGen([connection, gen])
-                          
-
-
-                          
+                          connection.end((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" disconnected.\n`))
