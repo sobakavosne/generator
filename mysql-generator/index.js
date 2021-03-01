@@ -4,16 +4,22 @@ const { generateMatrix
 
 const { connection }      = require('./source/utils/db')
 
+const { v4: uuid }        = require('uuid')
+
 const { trace
       , fNTimes
       , progress
+      , putBenchmarkA
+      , shootBenchmarkA
       }                   = require('./source/utils/helpers')
 
 const { removeAll 
       , insertGen
       }                   = require('./source/API/controller.db')
 
-const { compose }         = require('lodash/fp')
+const { compose
+      , uniqueId
+      }                   = require('lodash/fp')
 
 const { HOST
       , DATABASE
@@ -22,16 +28,20 @@ const { HOST
       , HASHTAGLENGTH
       }                   = require('dotenv').config().parsed
 
-                          connection.connect((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}.\n`))
-
-                          removeAll(connection, 'users')
-                          
-                          const gens = fNTimes([generateMatrix, [[1000000, TELLENGTH], [HASHTAGLENGTH, PSSWDLENGTH], 10]])
+const insertMarkedGen     = compose(shootBenchmarkA, insertGen, progress, putBenchmarkA)
 
                           trace('\n')
+
+                          const gens = fNTimes([generateMatrix, [[10, TELLENGTH], [HASHTAGLENGTH, PSSWDLENGTH], checkDecade(10)]])
                           
-                          gens.map((x, i) => compose(insertGen, progress)([connection, x, i, gens.length]))
-
-                          trace('\nNode.js finished the work.')
-
+                          connection.connect((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}.\n`))
+                          
+                          removeAll(connection, 'users')
+                          
+                          trace('\nSending generations to MySQL.\n')
+                          
+                          gens.map((gen, i) => insertMarkedGen([connection, gen, i, gens.length, uuid()]))
+                          
+                          trace('\nNode.js finished the work.\n')
+                          
                           connection.end((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" disconnected.\n`))

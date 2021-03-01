@@ -1,6 +1,6 @@
 const { reverse
-      , tail, 
-      compose
+      , compose
+      , tail
       }                   = require('lodash/fp')
 
 const constructPhone      = (x, y, z)   => Number(z + x.toString().padStart(y - z.toString().length, 0))
