@@ -9,17 +9,13 @@ const { v4: uuid }        = require('uuid')
 const { trace
       , fNTimes
       , progress
-      , putBenchmarkA
-      , shootBenchmarkA
       }                   = require('./source/utils/helpers')
 
 const { removeAll 
       , insertGen
       }                   = require('./source/API/controller.db')
 
-const { compose
-      , uniqueId
-      }                   = require('lodash/fp')
+const { compose }         = require('lodash/fp')
 
 const { HOST
       , DATABASE
@@ -28,11 +24,11 @@ const { HOST
       , HASHTAGLENGTH
       }                   = require('dotenv').config().parsed
 
-const insertMarkedGen     = compose(shootBenchmarkA, insertGen, progress, putBenchmarkA)
+const insertMarkedGen     = compose(insertGen, progress)
 
                           trace('\n')
 
-                          const gens = fNTimes([generateMatrix, [[10, TELLENGTH], [HASHTAGLENGTH, PSSWDLENGTH], checkDecade(10)]])
+                          const gens = fNTimes([generateMatrix, [[100000, TELLENGTH], [HASHTAGLENGTH, PSSWDLENGTH], checkDecade(10)]])
                           
                           connection.connect((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" connect on ${HOST}.\n`))
                           
@@ -42,6 +38,6 @@ const insertMarkedGen     = compose(shootBenchmarkA, insertGen, progress, putBen
                           
                           gens.map((gen, i) => insertMarkedGen([connection, gen, i, gens.length, uuid()]))
                           
-                          trace('\nNode.js finished the work.\n')
+                          trace('\nNode.js finished the work.')
                           
                           connection.end((e) => e ? trace(e.message) : trace(`\nMySQL DB "${DATABASE}" disconnected.\n`))
