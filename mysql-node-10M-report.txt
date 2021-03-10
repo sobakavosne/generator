@@ -1,0 +1,24 @@
+1  generated in: 1696.838
+2  generated in: 1663.233
+3  generated in: 2001.435
+4  generated in: 1695.424
+5  generated in: 1719.011
+6  generated in: 1730.487
+7  generated in: 1756.333
+8  generated in: 1774.571
+9  generated in: 1795.738
+10 generated in: 3313.430
+
+10M records generated and sent by Node.js in: 35649.538
+
+1  insertion: 27146.778
+2  insertion: 35543.351
+3  insertion: 43789.919
+4  insertion: 52203.628
+5  insertion: 60362.009
+6  insertion: 67654.353
+7  insertion: 74877.040
+8  insertion: 83384.584
+9  insertion: 91708.001
+10 insertion: 99906.295
+
