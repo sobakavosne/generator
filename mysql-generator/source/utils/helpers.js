@@ -1,6 +1,5 @@
-const { tail
-      , compose
-      , reverse
+const { compose
+      , curryRight
       , isUndefined
       }                   = require('lodash/fp')
 
@@ -8,21 +7,51 @@ const trace               = (x)         => { console.log(x); return x }
 
 const rndmString          = (x)         => Math.random().toString(36).substr(2, x)
 
-const checkDecade         = (N)         => N + Number(compose(reverse, tail, reverse)([...`${N}`]).join(''))
+const checkDecade         = (N)         => endsWithZero(N)
+                                            ? N + checkDecade(N/10)
+                                            : N + 1
 
 const endsWithZero        = (N)         => N % 10 === 0
 
-const putBenchmark        = (id)        => id !== undefined ? console.time(`Insertion (${id}) processed in`) : []
+const putBenchmark        = (id)        => isUndefined(id) ? [] : console.time(`Insertion (${id}) processed in`)
 
-const shootBenchmark      = (id)        => id !== undefined ? console.timeEnd(`Insertion (${id}) processed in`) : []
+const shootBenchmark      = (id)        => isUndefined(id) ? [] : console.timeEnd(`Insertion (${id}) processed in`)
 
-const errorDB             = (e, r, id)  => e ? trace(e.message)
+const dataBaseError       = (e, r, id)  => e ? trace(e.message)
                                               : trace(r.message === ''
                                                 ? 'DB cleaned.\n'
                                                   : 'Add generation: ' + r.message
                                                     ) + shootBenchmark(id)
 
-const stringifyMatrix     = (x)                   => x.map((y) =>`(${y[0]}, '${y[1]}', '${y[2]}')`).toLocaleString()
+const extractTelIndex     = (telephone) => telephone.toString().replace(/[1-9]+[0]*/, '')
 
+const constructContact    = (telIndex,
+                             telephone,
+                             contactIndex
+                            )           => telIndex.concat(contactIndex.toString().padStart(
+                                                      telephone.toString().length - telIndex.length, 0
+                                                    )
+                                                  )
 
-module.exports            = { trace, errorDB, stringifyMatrix, putBenchmark, shootBenchmark, rndmString, checkDecade, endsWithZero }
+const stringifyTelMatrix  = (x)         => x.map((y) =>`(${y[0]}, '${y[1]}', '${y[2]}')`).toLocaleString()
+
+const constructContactRow = (telephone,
+                             contactIndex
+                            )           => compose(
+                                                   x => [telephone, x],
+                                                   Number,
+                                                   curryRight(constructContact)(telephone, contactIndex),
+                                                   extractTelIndex
+                                                  )(telephone)
+
+module.exports            = { trace
+                            , rndmString
+                            , checkDecade
+                            , putBenchmark
+                            , endsWithZero
+                            , dataBaseError
+                            , shootBenchmark
+                            , extractTelIndex
+                            , stringifyTelMatrix
+                            , constructContactRow
+                            }
