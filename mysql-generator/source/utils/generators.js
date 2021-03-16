@@ -2,31 +2,27 @@ const L                   = require('lazy.js')
 
 const { noop
       , head
-      , chunk
       , random
       }                   = require('lodash/fp')
 
 const { trace
-      , checkDecade
       , endsWithZero
       , constructContactRow
       }                   = require('./helpers')
 
-const generateContacts    = (N,
-                             telCollection,
-                             [minContactsNumber, 
-                              maxContactsNumber
-                             ]
-                            )           => chunk(N, telCollection.map(
+const generateContacts    = (telCollection,
+                             minContactsNumber, 
+                             maxContactsNumber
+                            )           => telCollection.map(
                                             gen => gen.map(
                                               row => L.generate(x => x)
-                                                      .take(checkDecade(random(minContactsNumber, maxContactsNumber)))
                                                       .filter(x => !endsWithZero(x))
+                                                      .take(random(minContactsNumber, maxContactsNumber))
+                                                      .map(contactIndex => constructContactRow(head(row), contactIndex))
                                                       .toArray()
-                                                      .map(contactIndex => trace(constructContactRow(head(row), contactIndex)))
                                                       )
-                                                    )
-                                                  )
+                                                    ).reduce((acc, x) => acc.concat(x))
+                                                  
 
 const generateTelephones  = ()          => noop()
 
