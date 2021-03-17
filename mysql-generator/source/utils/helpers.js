@@ -33,9 +33,9 @@ const constructContact    = (telIndex,
                                                     )
                                                   )
 
-const stringifyTelMatrix  = (x)         => x.map((y) =>`(${y[0]}, '${y[1]}', '${y[2]}')`).toLocaleString()
+const stringifyTelMatrix  = (matrix)    => matrix.map((y) =>`(${y[0]}, '${y[1]}', '${y[2]}')`).toLocaleString()
 
-const stringifyContMatrix = (x)         => x.map((y) =>`(${y[0]}, '${y[1]}')`).toLocaleString()
+const stringifyContMatrix = (matrix)    => matrix.map((y) =>`(${y[0]}, '${y[1]}')`).toLocaleString()
 
 const constructContactRow = (telephone,
                              contactIndex

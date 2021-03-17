@@ -1,11 +1,11 @@
 const L                   = require('lazy.js')
 
-const { noop
-      , head
+const { head
+      , chunk
       , random
       }                   = require('lodash/fp')
 
-const { trace
+const { rndmString
       , endsWithZero
       , constructContactRow
       }                   = require('./helpers')
@@ -22,8 +22,24 @@ const generateContacts    = (telCollection,
                                                       .toArray()
                                                       )
                                                     ).reduce((acc, x) => acc.concat(x))
-                                                  
 
-const generateTelephones  = ()          => noop()
+const generateTelephones  = (N,
+                             genNumber,
+                             telLength,
+                             psswdLength,
+                             hashTagLength
+                            )           => chunk(N/genNumber,
+                                                 L.generate(x => endsWithZero(x)
+                                                                  ? undefined
+                                                                  : [Number('1'.concat(x.toString().padStart(telLength - 1, 0))),
+                                                                     rndmString(hashTagLength),
+                                                                     rndmString(psswdLength)
+                                                                    ]
+                                                            )
+                                                  .filter(x => !isUndefined(x))
+                                                  .take(N)
+                                                  .toArray()
+                                                )
+
 
 module.exports = { generateContacts, generateTelephones }
