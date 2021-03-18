@@ -18,10 +18,8 @@ const putBenchmark        = (id)        => isUndefined(id) ? [] : console.time(`
 const shootBenchmark      = (id)        => isUndefined(id) ? [] : console.timeEnd(`Insertion (${id}) processed in`)
 
 const dataBaseError       = (e, r, id)  => e ? trace(e.message)
-                                              : trace(r.message === ''
-                                                ? 'DB cleaned.\n'
-                                                  : 'Add generation: ' + r.message
-                                                    ) + shootBenchmark(id)
+                                             : trace(r.message === '' ? 'DB cleaned.\n' : 'Add generation: ' + r.message) 
+                                             + shootBenchmark(id)
 
 const extractTelIndex     = (telephone) => telephone.toString().replace(/[1-9]+[0]*/, '')
 
@@ -40,7 +38,7 @@ const stringifyContMatrix = (matrix)    => matrix.map((y) =>`(${y[0]}, '${y[1]}'
 const constructContactRow = (telephone,
                              contactIndex
                             )           => compose(
-                                                   x => [telephone, x],
+                                                   contact => [telephone, contact],
                                                    Number,
                                                    curryRight(constructContact)(telephone, contactIndex),
                                                    extractTelIndex

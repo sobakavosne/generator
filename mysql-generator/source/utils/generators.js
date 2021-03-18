@@ -3,6 +3,8 @@ const L                   = require('lazy.js')
 const { head
       , chunk
       , random
+      , curryRight
+      , isUndefined
       }                   = require('lodash/fp')
 
 const { rndmString
@@ -42,4 +44,4 @@ const generateTelephones  = (N,
                                                 )
 
 
-module.exports = { generateContacts, generateTelephones }
+module.exports = { generateContacts: curryRight(generateContacts), generateTelephones }
