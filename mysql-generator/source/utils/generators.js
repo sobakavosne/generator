@@ -1,47 +1,39 @@
+const R                   = require('ramda')
+
 const L                   = require('lazy.js')
 
-const { head
-      , chunk
-      , random
-      , curryRight
-      , isUndefined
-      }                   = require('lodash/fp')
+const FP                  = require('lodash/fp')
 
-const { rndmString
-      , endsWithZero
+const { endsWithZero
+      , trace
+      , randomFromRange
+      , constructTelRow
       , constructContactRow
       }                   = require('./helpers')
 
-const generateContacts    = (telCollection,
+const generateContacts    = (telephones,
                              minContactsNumber, 
                              maxContactsNumber
-                            )           => telCollection.map(
-                                            gen => gen.map(
-                                              row => L.generate(x => x)
-                                                      .filter(x => !endsWithZero(x))
-                                                      .take(random(minContactsNumber, maxContactsNumber))
-                                                      .map(contactIndex => constructContactRow(head(row), contactIndex))
-                                                      .toArray()
-                                                      )
-                                                    ).reduce((acc, x) => acc.concat(x))
+                            )           => telephones.map(
+                                                  row => (L.generate(R.identity)
+                                                          .filter(x => !endsWithZero(x))
+                                                          .take(FP.random(minContactsNumber, maxContactsNumber))
+                                                          .map(id => constructContactRow(R.head(row), id))
+                                                          .toArray())
+                                                         )
 
 const generateTelephones  = (N,
                              genNumber,
                              telLength,
                              psswdLength,
                              hashTagLength
-                            )           => chunk(N/genNumber,
-                                                 L.generate(x => endsWithZero(x)
-                                                                  ? undefined
-                                                                  : [Number('1'.concat(x.toString().padStart(telLength - 1, 0))),
-                                                                     rndmString(hashTagLength),
-                                                                     rndmString(psswdLength)
-                                                                    ]
-                                                            )
-                                                  .filter(x => !isUndefined(x))
-                                                  .take(N)
-                                                  .toArray()
-                                                )
+                            )           => R.splitEvery(N/genNumber,
+                                                        L.generate(R.identity)
+                                                         .filter(x => !endsWithZero(x) && x !== 1)
+                                                         .map(id => constructTelRow(telLength, psswdLength, hashTagLength, id))
+                                                         .take(N)
+                                                         .toArray()
+                                                       )
 
 
-module.exports = { generateContacts: curryRight(generateContacts), generateTelephones }
+module.exports = { generateContacts: R.curry(generateContacts), generateTelephones }

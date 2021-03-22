@@ -1,6 +1,8 @@
-const { trace }           = require('./source/utils/helpers')
+const { IO }              = require('monet')
 
 const { exec }            = require('child_process')
+
+const { trace }           = require('./source/utils/helpers')
 
 const { generateContacts
       , generateTelephones
@@ -17,11 +19,18 @@ const { N
       , MAXCONTACTSNUMBER
       }                   = require('dotenv').config().parsed
 
-const generateSequentially = () => new Promise(resolve => 
-                                      resolve(exec(`node --max-old-space-size=4096 index.js`, (err, stdout, stderr) => trace(stdout))))
-                                    .then((child) => child.on('exit', (code) => trace(code)))
+const nodeProcessIO       = (runner)    => IO(() => exec(`node --max-old-space-size=4096 ${runner}`, (err, stdout, stderr) => stdout))
 
-generateSequentially()
+const generateWithCildIO  = (matrix,
+                             runnerName
+                            )           => R.head(matrix)
+                                            ? new Promise(resolve => resolve(nodeProcessIO(runnerName)))
+                                              .then((child) => child.on('exit', generateWithCildIO(R.tail(matrix), runnerName)))
+                                            : undefined
+
+const generateWithRedCIO  = (matrix,
+                             runnerName
+                            )           => R.__
 
 // dir = exec("ls -a", (err, stdout, stderr) => trace(stdout))
 

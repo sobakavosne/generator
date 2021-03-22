@@ -1,37 +1,29 @@
-const { IO }              = require('monet')
+const R                   = require('ramda')
 
-const { noop
-      , curryRight
-      }                   = require('lodash/fp')
+const { IO }              = require('monet')
 
 const { join }            = require('path')
 
 const { rmSync
       , mkdirSync
-      , writeFile
       , existsSync
       , readFileSync
+      , writeFileSync
       }                   = require('fs')
 
-const writeBuffer         = (writable,
-                             tmpPath
-                            )           => IO(
-                                              () => existsSync(tmpPath)
-                                                      ? noop()
-                                                      : mkdirSync(tmpPath)
-                                             )
+const writeBufferIO       = (writable,
+                             tmpPath,
+                             tmpFile
+                            )           => IO(() => existsSync(tmpPath) ? undefined : mkdirSync(tmpPath))
                                             .takeRight(
-                                              IO(
-                                                 () => writeFile(
-                                                   join(tmpPath, 'buffer.txt'), 
-                                                   writable, 
-                                                   (e) => e ? trace(e) : null)
-                                                )
-                                              )
+                                              IO(() => writeFileSync(join(tmpPath, tmpFile), writable, (e) => e ? e : undefined))
+                                            )
 
-const readBuffer          = (tmpPath)   => IO(() => readFileSync(tmpPath))
+const readBufferIO        = (tmpPath,
+                             tmpFile
+                            )           => IO(() => R.compose(R.values, JSON.parse, readFileSync)(join(tmpPath, tmpFile))).run()
 
-const removeBuffer        = (tmpPath)  => IO(() => rmSync(tmpPath, { recursive: true }))
+const removeBufferIO      = (tmpPath)   => IO(() => rmSync(tmpPath, { recursive: true }))
 
 
-module.exports            = { writeBuffer : curryRight(writeBuffer), readBuffer, removeBuffer }
+module.exports            = { writeBufferIO : R.curry(writeBufferIO), readBufferIO, removeBufferIO }

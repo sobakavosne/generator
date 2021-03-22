@@ -1,27 +1,46 @@
 const { v4: uuid }        = require('uuid')
 
-const { connection }      = require('./source/utils/db')
-
-const { readBuffer
-      , writeBuffer
-      , removeBuffer
+const { readBufferIO
+      , writeBufferIO
+      , removeBufferIO
       }                   = require('./source/utils/buffer')
 
 const { generateContacts
       , generateTelephones
       }                   = require('./source/utils/generators')
 
-const { MINCONTACTSNUMBER
+const { TMPPATH
+      , TMPFILE
+      , MINCONTACTSNUMBER
       , MAXCONTACTSNUMBER
       }                   = require('dotenv').config().parsed
 
-const { compose }         = require('lodash/fp')
+const R                   = require('ramda')
 
-const TMPPATH             = require('path').join('.', require('os').tmpdir())
+const { trace }           = require('./source/utils/helpers')
 
-const contactsIO          = compose(removeBuffer, generateContacts(MINCONTACTSNUMBER, MAXCONTACTSNUMBER), readBuffer)
+const { removeAll 
+      , insertContactsGen
+      , insertTelephoneGen
+      }                   = require('./source/DB.API/db.controllers')
 
-const telephonesIO        = compose(writeBuffer(TMPPATH), JSON.stringify, generateTelephones)
+const { connection }      = require('./source/utils/db')
+
+const { IO }              = require('monet')
+
+const contactsIO          = R.compose(
+                                      x => IO(() => x.map(y => insertContactsGen(connection, y, uuid()))).takeRight(IO(() => x)).run(),
+                                      generateContacts(R.__, MINCONTACTSNUMBER, MAXCONTACTSNUMBER),
+                                      readBufferIO
+                                     )
+
+const telephonesIO        = R.compose(
+                                      writeBufferIO(R.__, TMPPATH, TMPFILE),
+                                      JSON.stringify,
+                                      R.unnest,
+                                      x => IO(() => x.map(y => insertTelephoneGen(connection, y, uuid()))).takeRight(IO(() => x)).run(),
+                                      generateTelephones
+                                     )
 
 
-module.exports            = { telephonesIO, contactsIO, connection, TMPPATH, uuid }
+module.exports            = { telephonesIO, contactsIO, TMPPATH, TMPFILE, uuid }
