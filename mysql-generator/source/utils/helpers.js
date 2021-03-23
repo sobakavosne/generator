@@ -1,8 +1,10 @@
+const R                   = require('ramda')
+
+const L                   = require('lazy.js')
+
 const { IO }              = require('monet')
 
 const { green }           = require('cli-color')
-
-const R                   = require('ramda')
 
 const trace               = (x)         => IO(() => console.log(x)).takeRight(IO(() => x)).run()
 
@@ -22,10 +24,6 @@ const insertGenError      = (id,
                             )           => trace(error ? error.message : 'Add generation: ' + green(result.message))
                                            + shootBenchmark(id)
 
-const randomFromRange     = (start,
-                             end
-                            )           => Math.floor((Math.random() * end - start + 1)) + start
-
 const removeTableError    = (error,
                              result,
                              id
@@ -41,6 +39,14 @@ const constructContact    = (telIndex,
                             )           => telIndex.concat(contactIndex.toString().padStart(
                                                       telephone.toString().length - telIndex.length, 0
                                                     )
+                                                  )
+
+const takeSpecificGen     = (matrix,
+                             genAmount,
+                             matrixMark
+                            )           => R.props(
+                                                   L.generate(R.identity).dropWhile(x => x < matrixMark).take(genAmount).toArray(),
+                                                   matrix
                                                   )
 
 const emitSignificantID   = (value)     => value.toString().replace(/[1-9]+[0]*/, '')
@@ -83,11 +89,11 @@ module.exports            = { trace
                             , endsWithZero
                             , shootBenchmark
                             , constructTelRow
-                            , randomFromRange
                             , removeTableError
                             , roundUpToHundreds
                             , constructTelQuery
                             , constructContQuery
                             , constructContactRow
                             , insertGenError: R.curry(insertGenError)
+                            , takeSpecificGen: R.curry(takeSpecificGen)
                             }

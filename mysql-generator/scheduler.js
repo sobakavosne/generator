@@ -4,37 +4,27 @@ const { exec }            = require('child_process')
 
 const { trace }           = require('./source/utils/helpers')
 
-const { generateContacts
-      , generateTelephones
-      }                   = require('./source/utils/generators')
+const { GENERATIONAMOUNT 
+      }                   = require('./index')
 
-const { N
-      , HOST
-      , DATABASE
-      , GENNUMBER
-      , TELLENGTH
-      , PSSWDLENGTH
-      , HASHTAGLENGTH
-      , MINCONTACTSNUMBER
-      , MAXCONTACTSNUMBER
-      }                   = require('dotenv').config().parsed
+const nodeProcessIO       = (runner,
+                             mark
+                            )           => IO(() => exec(
+                                                `node --max-old-space-size=4096 ${runner} ${mark}`,
+                                                (err, stdout, stderr) => trace(stdout)
+                                               )
+                                             ).run()
 
-const nodeProcessIO       = (runner)    => IO(() => exec(`node --max-old-space-size=4096 ${runner}`, (err, stdout, stderr) => stdout))
-
-const generateWithCildIO  = (matrix,
-                             runnerName
-                            )           => R.head(matrix)
-                                            ? new Promise(resolve => resolve(nodeProcessIO(runnerName)))
-                                              .then((child) => child.on('exit', generateWithCildIO(R.tail(matrix), runnerName)))
-                                            : undefined
-
-const generateWithRedCIO  = (matrix,
-                             runnerName
-                            )           => R.__
-
-// dir = exec("ls -a", (err, stdout, stderr) => trace(stdout))
-
-// dir.on('exit', (code) => trace(code))
-
-// new Promise((rs, rj) => setTimeout(() => rs(exec("ls -a", (e, x, y) => trace(x))), 1000))
-//   .then((dir) => dir.on('exit', (code) => setTimeout(() => trace(code), 1000)))
+const generateWithCildIO  = (runner,
+                             mark
+                            )           => Promise.resolve(nodeProcessIO(runner, mark))
+                                              .then((child) => child.on(
+                                                  'exit', 
+                                                  code => code === 0
+                                                                ? generateWithCildIO(runner, mark + trace(GENERATIONAMOUNT))
+                                                                : undefined
+                                                )
+                                              )
+                          
+                          generateWithCildIO('main.js', 0)
+                          

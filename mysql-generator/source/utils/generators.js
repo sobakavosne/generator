@@ -5,8 +5,6 @@ const L                   = require('lazy.js')
 const FP                  = require('lodash/fp')
 
 const { endsWithZero
-      , trace
-      , randomFromRange
       , constructTelRow
       , constructContactRow
       }                   = require('./helpers')
