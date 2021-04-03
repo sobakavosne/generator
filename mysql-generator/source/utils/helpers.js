@@ -14,9 +14,9 @@ const checkDecade         = (N)         => endsWithZero(N) ? N + checkDecade(N/1
 
 const endsWithZero        = (N)         => N % 10 === 0
 
-const putBenchmark        = (id)        => R.isNil(id) ? [] : console.time(`Insertion (${id}) processed in`)
+const putBenchmark        = (id)        => R.isNil(id) ? [] : console.time(`Action (${id}) processed in`)
 
-const shootBenchmark      = (id)        => R.isNil(id) ? [] : console.timeEnd(`Insertion (${id}) processed in`)
+const shootBenchmark      = (id)        => R.isNil(id) ? [] : console.timeEnd(`Action (${id}) processed in`)
 
 const insertGenError      = (id,
                              error,
@@ -63,6 +63,10 @@ const constructTelQuery   = (gen)       => 'INSERT INTO `users` (`yumi_user_id`,
 const constructContQuery  = (gen)       => 'INSERT INTO `contacts` (`yumi_user_id`, `contact_user_id`) VALUES'
                                            + `${stringifyContMatrix(gen)}`
 
+const constructSelect     = (yumi_user_id
+                            )           => 'SELECT `id`, `contact_user_id` FROM `contacts` WHERE `yumi_user_id`='
+                                           + `${yumi_user_id}`
+
 const constructTelRow     = (telLength,
                              psswdLength,
                              hashTagLength,
@@ -89,6 +93,7 @@ module.exports            = { trace
                             , endsWithZero
                             , shootBenchmark
                             , constructTelRow
+                            , constructSelect
                             , removeTableError
                             , roundUpToHundreds
                             , constructTelQuery

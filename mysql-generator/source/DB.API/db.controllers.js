@@ -2,6 +2,7 @@ const { trace
       , putBenchmark
       , shootBenchmark
       , insertGenError
+      , constructSelect
       , removeTableError
       , constructTelQuery
       , constructContQuery
@@ -14,6 +15,23 @@ const { green }           = require('cli-color')
 const removeAll           = (connection,
                              table
                             )           => connection.query(`DELETE FROM ${table}`, removeTableError)
+
+const getContactsByID     = (connection,
+                             yumi_user_id,
+                             id
+                            )           => new Promise((rs, rj) => {
+                                                                    putBenchmark(id);
+                                                                    
+                                                                    rs(connection.query(
+                                                                      constructSelect(yumi_user_id),
+                                                                      (e, result)  => e ? trace(e.message)
+                                                                                        : trace(`Select contacts ${yumi_user_id}: ` 
+                                                                                            + green(result.message)) 
+                                                                                            + shootBenchmark(id)
+                                                                                            ))
+                                                                   })
+                                            .then(result => trace(result))
+                                            .catch(reason => trace(reason))
 
 // const insertTelephoneGen  = (connection,
 //                              generation,
@@ -76,4 +94,4 @@ const insertTelephoneGen  = (connection,
                                                                    })
 
 
-module.exports            = { insertTelephoneGen, insertContactsGen, removeAll }
+module.exports            = { insertTelephoneGen, insertContactsGen, getContactsByID, removeAll }
