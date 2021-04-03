@@ -39,7 +39,7 @@ const contactsIO          = R.compose(
                                       readBufferIO
                                      )
 
-const telephonesIO        = R.compose(
+const phonesIO        = R.compose(
                                       writeBufferIO(R.__, TMPPATH, TMPFILE),
                                       JSON.stringify,
                                       R.unnest,
@@ -48,4 +48,4 @@ const telephonesIO        = R.compose(
                                      )
 
 
-module.exports            = { telephonesIO, contactsIO, GENERATIONAMOUNT, uuid }
+module.exports            = { phonesIO, contactsIO, GENERATIONAMOUNT, uuid }

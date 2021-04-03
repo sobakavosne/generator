@@ -7,6 +7,8 @@ const { trace }           = require('./source/utils/helpers')
 const { GENERATIONAMOUNT 
       }                   = require('./index')
 
+const { MARK }            = require('dotenv').config().parsed
+
 const nodeProcessIO       = (runner,
                              mark
                             )           => IO(() => exec(
@@ -15,16 +17,19 @@ const nodeProcessIO       = (runner,
                                                )
                                              ).run()
 
-const generateWithCildIO  = (runner,
+// runs a sequence of child processes synchronously
+// upon completion of the previous one
+// (used to generate a huge amount of contacts)
+const generateWithCildIOR = (runner,
                              mark
                             )           => Promise.resolve(nodeProcessIO(runner, mark))
                                               .then((child) => child.on(
                                                   'exit', 
                                                   code => code === 0
-                                                                ? generateWithCildIO(runner, mark + trace(GENERATIONAMOUNT))
+                                                                ? generateWithCildIOR(runner, mark + trace(GENERATIONAMOUNT))
                                                                 : undefined
                                                 )
                                               )
                           
-                          generateWithCildIO('main.js', 0)
+                          generateWithCildIOR('main.js', MARK)
                           

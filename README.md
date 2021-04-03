@@ -1,10 +1,14 @@
-*... in progress*
-
----
-
 **Generator**
 
 Application aimed to generate a large number of records (MySQL).
+
+**To-do list:**
+
+- [x] Create Generator
+- [x] Create Buffer
+- [x] Create Scheduler
+- [ ] Create Client (full run usage)
+- [ ] Mark the phonesIO object on the heap to use it in the contact generation to avoid bufferization
 
 **MySQL-generator usage**
 
@@ -30,6 +34,9 @@ MAXCONTACTSNUMBER=...     # Maximum of contacts per phone
 
 TMPPATH=tmp
 TMPFILE=buffer.txt
+
+MARK=...                  # Mark of generated contacts
+                          # Mark increases on GENERATIONAMOUNT value
 ```
 
 **Phones** are generated in the following order:
@@ -54,4 +61,10 @@ TMPFILE=buffer.txt
  - CPU - 2 physical cores
  - RAM - 12Gb
 
-**Restrictions**: generation number (**GENNUMBER**) concatenated with maximum phone increment (**~ N**) cannot be more than phone length (**PHONELENGTH**).
+**Restrictions**: generation number (**GENNUMBER**) concatenated with maximum phone increment (**~N**) cannot be more than phone length (**PHONELENGTH**).
+
+First monad (**phonesIO**): demonstration.
+
+![](static/demonstration/node-10M-generator.mp4)
+
+Second monad (**contactsIO**): The generation of a large number of records occurs through the sequential start of the child processes of generateWithChildIOR scheduler monad (`R` means ***recursively***).
