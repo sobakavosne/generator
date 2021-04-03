@@ -65,6 +65,6 @@ MARK=...                  # Mark of generated contacts
 
 First monad (**phonesIO**): demonstration.
 
-![](static/demonstration/node-10M-generator.mp4)
+![](static/demonstration/node-10M-generator.gif)
 
 Second monad (**contactsIO**): The generation of a large number of records occurs through the sequential start of the child processes of generateWithChildIOR scheduler monad (`R` means ***recursively***).
