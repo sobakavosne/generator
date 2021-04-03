@@ -8,7 +8,7 @@ Application aimed to generate a large number of records (MySQL).
 - [x] Create Buffer
 - [x] Create Scheduler
 - [ ] Create Client (full run usage)
-- [ ] Mark the phonesIO object on the heap to use it in the contact generation to avoid bufferization
+- [ ] Mark the phonesIO object on the heap to use it in the contact generation to avoid buffering
 
 **MySQL-generator usage**
 
@@ -68,3 +68,30 @@ First monad (**phonesIO**): demonstration.
 ![](static/demonstration/node-10M-generator.gif)
 
 Second monad (**contactsIO**): The generation of a large number of records occurs through the sequential start of the child processes of generateWithChildIOR scheduler monad (`R` means ***recursively***).
+
+**Machine**:
+
+```bash
+OS: Ubuntu 16.04.6 LTS x86_64
+Kernel: 4.4.0-1106-aws
+CPU: AMD EPYC 7571 (4) @ 2.199GHz 
+RAM: 31797MiB
+```
+
+**Users** benchmarks:
+
+```bash
+1M records are generated for 1.9s.
+1M records are sent to MySQL for 1.5.
+1M records are inserted into DB for 8s.
+
+10M records are generated and sent by Node.js in: 35649.538ms.
+10M generation, sending and insertion occurs for 99906.295ms.
+```
+
+**Contacts** benchmarks (slow buffering):
+
+```bash
+1M contacts are generated and sent for 47s.
+1M records are inserted into DB for 10s.
+```
