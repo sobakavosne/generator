@@ -39,7 +39,7 @@ const contactsIO          = R.compose(
                                       readBufferIO
                                      )
 
-const phonesIO        = R.compose(
+const phonesIO            = R.compose(
                                       writeBufferIO(R.__, TMPPATH, TMPFILE),
                                       JSON.stringify,
                                       R.unnest,
