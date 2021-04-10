@@ -37,6 +37,7 @@ TMPFILE=buffer.txt
 
 MARK=...                  # Mark of generated contacts
                           # Mark increases on GENERATIONAMOUNT value
+                          # Mark indicates the scheduler entry point
 ```
 
 **Phones** are generated in the following order:
@@ -61,13 +62,13 @@ MARK=...                  # Mark of generated contacts
  - CPU - 2 physical cores
  - RAM - 12Gb
 
-**Restrictions**: generation number (**GENNUMBER**) concatenated with maximum phone increment (**~N**) cannot be more than phone length (**PHONELENGTH**).
+**Restrictions**: generation number (`GENNUMBER`) concatenated with maximum phone increment (`~N`) cannot be more than phone length (`PHONELENGTH`).
 
-First monad (**phonesIO**): demonstration.
+First monad (`phonesIO`): demonstration.
 
 ![](static/demonstration/node-10M-generator.gif)
 
-Second monad (**contactsIO**): The generation of a large number of records occurs through the sequential start of the child processes of generateWithChildIOR scheduler monad (`R` means ***recursively***).
+Second monad (`contactsIO`): The generation of a large number of records occurs through the sequential start of the child processes of `generateWithChildIOR` scheduler monad (`R` means ***recursively***).
 
 **Machine**:
 
