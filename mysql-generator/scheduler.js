@@ -20,6 +20,7 @@ const nodeProcessIO       = (runner,
 // runs a sequence of child processes synchronously
 // upon completion of the previous one
 // (used to generate a huge amount of contacts)
+// *IOR means - recursive IO monad
 const generateWithCildIOR = (runner,
                              mark
                             )           => Promise.resolve(nodeProcessIO(runner, mark))

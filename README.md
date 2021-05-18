@@ -12,6 +12,12 @@ Application aimed to generate a large number of records (MySQL).
 
 **MySQL-generator usage**
 
+Install npm packages:
+```bash
+cd mysql-generator
+npm install
+```
+
 Create `.env` file in `/mysql-generator` folder with the following content:
 
 ```bash
@@ -38,6 +44,8 @@ TMPFILE=buffer.txt
 MARK=...                  # Mark of generated contacts
                           # Mark increases on GENERATIONAMOUNT value
                           # Mark indicates the scheduler entry point
+                          # Mark's default value equals 0
+                          # GENERATIONAMOUNT is a value that is calculated
 ```
 
 **Phones** are generated in the following order:
